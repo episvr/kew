@@ -1862,11 +1862,12 @@ int display_tree(FileSystemEntry *root, int depth, int max_list_size,
                                         process_name_scroll(root->name, filename,
                                                             max_name_width -
                                                                 extra_indent,
-                                                            is_same_name_as_last_time);
+                                                            is_same_name_as_last_time,
+                                                            ui->stripTrackNumbers);
                                 } else {
                                         process_name(root->name, filename,
                                                      max_name_width - extra_indent,
-                                                     true, true);
+                                                     ui->stripTrackNumbers, true);
                                 }
 
                                 if (is_playing) {

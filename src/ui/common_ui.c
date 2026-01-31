@@ -134,6 +134,7 @@ void transfer_settings_to_ui(void)
         ui->hideSideCover = (settings->hideSideCover[0] == '1');
         ui->saveRepeatShuffleSettings =
             (settings->saveRepeatShuffleSettings[0] == '1');
+        ui->stripTrackNumbers = (settings->stripTrackNumbers[0] == '1');
         ui->trackTitleAsWindowTitle =
             (settings->trackTitleAsWindowTitle[0] == '1');
         ui->allowNotifications = (settings->allowNotifications[0] == '1');
@@ -467,7 +468,7 @@ static bool has_fullwidth_chars(const char *str)
 }
 
 void process_name(const char *name, char *output, int max_width,
-                  bool strip_unneeded_chars, bool strip_suffix)
+                  bool strip_track_numbers, bool strip_suffix)
 {
         if (!name) {
                 output[0] = '\0';
@@ -488,14 +489,13 @@ void process_name(const char *name, char *output, int max_width,
                 copy_half_or_full_width_chars_with_max_width(name, output, max_width);
         }
 
-        if (strip_unneeded_chars)
-                format_filename(output);
+        format_filename(output, strip_track_numbers);
 
         trim(output, strlen(output));
 }
 
 void process_name_scroll(const char *name, char *output, int max_width,
-                         bool is_same_name_as_last_time)
+                         bool is_same_name_as_last_time, bool strip_track_numbers)
 {
         size_t scrollableLength = strnlen(name, max_width);
         size_t nameLength = strlen(name);
@@ -514,9 +514,9 @@ void process_name_scroll(const char *name, char *output, int max_width,
                 scrollableLength = max_width;
 
         if (has_fullwidth_chars(name)) {
-                process_name(name, output, max_width, true, true);
+                process_name(name, output, max_width, strip_track_numbers, true);
         } else if (nameLength <= (size_t)max_width || finished_scrolling) {
-                process_name(name, output, scrollableLength, true, true);
+                process_name(name, output, scrollableLength, strip_track_numbers, true);
         } else {
                 is_long_name = true;
 
@@ -527,7 +527,7 @@ void process_name_scroll(const char *name, char *output, int max_width,
 
                 c_strcpy(output, name + start, max_width + 1);
 
-                format_filename(output);
+                format_filename(output, strip_track_numbers);
                 trim(output, max_width);
 
                 last_name_position++;

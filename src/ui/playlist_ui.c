@@ -185,12 +185,13 @@ int display_playlist_items(int row, int col, Node *start_node, int start_iter, i
 
                                 process_name_scroll(buffer, filename,
                                                     max_name_width,
-                                                    is_same_name_as_last_time);
+                                                    is_same_name_as_last_time,
+                                                    ui->stripTrackNumbers);
 
                                 inverse_text();
                         } else {
                                 process_name(buffer, filename, max_name_width,
-                                             true, true);
+                                             ui->stripTrackNumbers, true);
                         }
 
                         Node *current = get_current_song();

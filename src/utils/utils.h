@@ -11,6 +11,7 @@
 
 #include <glib.h>
 #include <regex.h>
+#include <stdbool.h>
 
 #ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 200809L
@@ -43,7 +44,7 @@ void c_usleep(int microseconds);
 void c_strcpy(char *dest, const char *src, size_t dest_size);
 void extract_extension(const char *filename, size_t num_chars, char *ext);
 void trim(char *str, size_t max_len);
-void format_filename(char *str);
+void format_filename(char *str, bool strip_track_numbers);
 void shorten_string(char *str, size_t max_length);
 void print_blank_spaces(int num_spaces);
 float get_float(const char *str);

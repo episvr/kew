@@ -7,7 +7,6 @@
  */
 
 #include "utils.h"
-#include "common/appstate.h"
 
 #include <ctype.h>
 #include <fcntl.h>
@@ -474,10 +473,10 @@ char *get_file_path(const char *filename)
         return filepath;
 }
 
-void format_filename(char *str)
+void format_filename(char *str, bool strip_track_numbers)
 {
         // TODO: Logic for stripping track numbers needs review, temporary disable it to avoid issues.
-        if (get_app_state()->uiSettings.stripTrackNumbers) {
+        if (strip_track_numbers) {
                 int i = 0;
                 int last_digit_start = -1;
 
@@ -520,28 +519,10 @@ void format_filename(char *str)
                         }
                 }
 
-                // Step 2: Remove the prefix
-                if (i > 0) {
-                        // Check if removing would leave invalid filename
-                        char *dot = strrchr(str, '.');
-                        bool would_leave_invalid = false;
-                        if (dot) {
-                                int last_dot = dot - str;
-                                if (i >= last_dot) {
-                                        would_leave_invalid = true;
-                                }
-                        } else {
-                                // No extension, check if removing leaves empty string
-                                if (strlen(str + i) == 0) {
-                                        would_leave_invalid = true;
-                                }
-                        }
-                        if (would_leave_invalid) {
-                                // Keep the original string
-                        } else {
-                                memmove(str, str + i, strlen(str + i) + 1);
-                        }
-                }
+                // Step 2: Remove the prefix if it doens't remove all characters
+                if (i > 0 && strlen(str + i) != 0) {
+                        memmove(str, str + i, strlen(str + i) + 1);
+                }               
         }
 
         // Step 3: Replace underscores with spaces
